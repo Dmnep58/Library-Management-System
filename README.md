@@ -19,7 +19,7 @@ The Library Management System must have the following functional requirements:
 8.	The librarian must be able to add/remove books, manage users, view recommendations from users, etc.
 
 <img width="841" alt="login" src="https://user-images.githubusercontent.com/89973994/194000105-e4da778d-50b8-484e-86c0-3d6327262a21.PNG">
-![Uploading image.png…]()
+
 Software Requirements
 
  Database - MYSQL is used as database as it easy to maintain and
