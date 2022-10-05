@@ -2,11 +2,7 @@
 <module type="JAVA_MODULE" version="4">
   <component name="EclipseModuleManager">
     <libelement value="jar://$USER_HOME$/eclipse-workspace/student_Registration_System/src/mysql-connector-java-8.0.26.jar!/" />
-    <libelement value="jar://$MODULE_DIR$/RSCalendar.jar!/" />
     <libelement value="jar://$MODULE_DIR$/jfreechart-1.0.19.jar!/" />
-    <libelement value="jar://$MODULE_DIR$/jcommon-1.0.23.jar!/" />
-    <libelement value="jar://$MODULE_DIR$/RojeruSan.parte1.jar!/" />
-    <libelement value="jar://$MODULE_DIR$/RSFoto_v1.0.jar!/" />
     <src_description expected_position="0">
       <src_folder value="file://$MODULE_DIR$/src" expected_position="0" />
     </src_description>
