@@ -15,6 +15,12 @@ import java.sql.ResultSet;
 import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import javax.swing.border.MatteBorder;
+
+import function.App;
+import function.DBconnection;
+import function.PasswordEncodingDecoding;
+import function.employee;
+
 import javax.swing.JButton;
 import javax.swing.border.BevelBorder;
 import java.awt.Cursor;
@@ -63,6 +69,9 @@ public class Signup extends JFrame {
 	protected JTextField txt_email;
 	protected JTextField txt_contact;
 	private JPasswordField passwordField;
+	
+	PasswordEncodingDecoding psDecoding = new PasswordEncodingDecoding();
+	App app = new App();
 
 	/**
 	 * Launch the application.
@@ -85,9 +94,9 @@ public class Signup extends JFrame {
 	@SuppressWarnings("deprecation")
 	public void insertsignupdata() {
 		String usernameString = txt_user.getText();
-		String passwordString = passwordField.getText();
+	    String passwordString =  psDecoding.encrypt(passwordField.getText());
 		String emailString = txt_email.getText();
-		String contactString = txt_contact.getText();
+		int contactString = Integer.parseInt(txt_contact.getText());
 		
 		try {
 			Connection connection = DBconnection.getConnection();
@@ -95,9 +104,9 @@ public class Signup extends JFrame {
 			PreparedStatement preparedStatement = connection.prepareStatement(queryString);
 			
 			preparedStatement.setString(1, usernameString);
-			preparedStatement.setString(2, passwordString);
+			preparedStatement.setString(2,passwordString);
 			preparedStatement.setString(3, emailString);
-			preparedStatement.setString(4, contactString);
+			preparedStatement.setInt(4, contactString);
 			
 			int UpdatedRowCount = preparedStatement.executeUpdate();
 			
@@ -152,7 +161,6 @@ public class Signup extends JFrame {
 	
 	
 	// to check duplicate users
-	
 	public boolean checkduplicate() {
 		String emaString = txt_email.getText();
 		
@@ -332,11 +340,20 @@ public class Signup extends JFrame {
 		signup = new JButton("Sign Up");
 		signup.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(validation() == true  && checkduplicate()==false) {
-				insertsignupdata();
+			
+				if((validation() == true  && checkduplicate()==false) && employee.validEmployee(txt_email.getText())==true ) {
+					String emailLibrarian= txt_email.getText();
+				    String PasswordEmail=
+					 		 "Hi "
+							+txt_user.getText()+","
+					 		+ "\r\n"
+					 		+ "Your Password is : "
+					 		+ passwordField.getText();
+						App.sendEmail(PasswordEmail,App.getSubject(),emailLibrarian, App.getFrom());
+					insertsignupdata();
 			}
 				else { 
-					JOptionPane.showMessageDialog(signup, "Email already Registered");
+					JOptionPane.showMessageDialog(signup, "Incorrect Information.");
 				}
 			}
 		});

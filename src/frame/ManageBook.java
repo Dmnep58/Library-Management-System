@@ -11,6 +11,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+
+import function.DBconnection;
+
 import java.awt.Color;
 import java.awt.ComponentOrientation;
 import javax.swing.JLabel;
@@ -93,7 +96,7 @@ public class ManageBook extends JFrame {
 					ManageBook frame = new ManageBook();
 					frame.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
+				JOptionPane.showMessageDialog(null, e.getCause());
 				}
 			}
 		});
@@ -131,7 +134,6 @@ public class ManageBook extends JFrame {
 	
 	
 	// to add books
-	
 	public boolean addBook() {
 		boolean isadd = false;
 		bookid = Integer.parseInt(BOOKFIELD.getText());
@@ -262,6 +264,29 @@ public class ManageBook extends JFrame {
 	}
 	
 	
+	//insert the image in the table
+	public void BookImg() {
+		bookid = Integer.parseInt(BOOKFIELD.getText());
+		
+		try {
+			
+			Connection connection = DBconnection.getConnection();
+			String query = ("Insert into BookImg values(?,?)");
+			PreparedStatement preparedStatement = connection.prepareStatement(query);
+			
+			preparedStatement.setInt(1, bookid);
+			
+			
+			
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
 
 	/**
 	 * Create the frame.
@@ -276,13 +301,14 @@ public class ManageBook extends JFrame {
 		contentPane.setLayout(null);
 		
 		StudentDetailPanel = new JPanel();
+		StudentDetailPanel.setForeground(new Color(255, 255, 255));
 		StudentDetailPanel.setBackground(new Color(0, 102, 255));
 		StudentDetailPanel.setBounds(0, 0, 363, 659);
 		contentPane.add(StudentDetailPanel);
 		StudentDetailPanel.setLayout(null);
 		
 		BOOKID = new JLabel("Enter Book ID\r\n\r\n");
-		BOOKID.setForeground(Color.WHITE);
+		BOOKID.setForeground(new Color(255, 255, 255));
 		BOOKID.setFont(new Font("Ubuntu", Font.BOLD, 19));
 		BOOKID.setBounds(104, 91, 171, 31);
 		StudentDetailPanel.add(BOOKID);
@@ -387,7 +413,7 @@ public class ManageBook extends JFrame {
 		ADD.setBorderPainted(false);
 		ADD.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		ADD.setBackground(new Color(255, 0, 51));
-		ADD.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		ADD.setBorder (new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		ADD.setFocusTraversalKeysEnabled(false);
 		ADD.setFocusable(false);
 		ADD.setFocusPainted(false);
@@ -516,7 +542,7 @@ public class ManageBook extends JFrame {
 		StudentRecordPanel.add(TitleLinePanel);
 		
 		TabelPanel = new JPanel();
-		TabelPanel.setBounds(27, 238, 548, 244);
+		TabelPanel.setBounds(27, 238, 548, 303);
 		StudentRecordPanel.add(TabelPanel);
 		TabelPanel.setLayout(null);
 		
@@ -524,7 +550,7 @@ public class ManageBook extends JFrame {
 		scrollPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 		scrollPane.setFocusable(false);
 		scrollPane.setFocusTraversalKeysEnabled(false);
-		scrollPane.setBounds(0, 0, 548, 244);
+		scrollPane.setBounds(0, 0, 548, 303);
 		TabelPanel.add(scrollPane);
 		
 		table = new RSTableMetro();

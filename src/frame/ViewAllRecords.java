@@ -28,6 +28,9 @@ import java.awt.ComponentOrientation;
 import rojeru_san.complementos.RSTableMetro;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+
+import function.DBconnection;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -291,6 +294,7 @@ public class ViewAllRecords extends JFrame {
 		SearchDescPanel.add(duedatefield);
 		
 		searchBtn = new JButton("search\r\n");
+		searchBtn.setFocusable(false);
 		searchBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 		if(datesfilled()==false) {

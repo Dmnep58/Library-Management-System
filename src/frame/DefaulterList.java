@@ -23,6 +23,8 @@ import rojeru_san.complementos.RSTableMetro;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import function.DBconnection;
+
 public class DefaulterList extends JFrame {
 
 	/**

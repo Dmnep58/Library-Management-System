@@ -1,4 +1,4 @@
-package frame;
+	package frame;
 
 
 import java.awt.EventQueue;
@@ -11,14 +11,20 @@ import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import java.awt.Font;
 import java.awt.HeadlessException;
+import java.awt.Image;
 
 import javax.swing.JTextField;
 import javax.swing.border.MatteBorder;
+
+import function.DBconnection;
+import rojeru_san.complementos.RSTableMetro;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,6 +36,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import com.toedter.calendar.JDateChooser;
 
 public class isssue_books extends JFrame {
 
@@ -77,8 +84,12 @@ public class isssue_books extends JFrame {
 	private JTextField branchfield;
 	private JTextField getbookfield;
 	private JTextField studentfield;
-    private JFormattedTextField today , dueday;
-
+    private JFormattedTextField today;
+    
+    JDateChooser dateChooser;
+    private JLabel bookimg;
+    
+   
 	/**
 	 * Launch the application.
 	 */
@@ -125,6 +136,35 @@ public class isssue_books extends JFrame {
 	}
 	
 	
+	
+	//fetch book img
+	public void fetchimg() {
+		String bookname = booknamefield.getText();
+		
+		try {
+			Connection connection = DBconnection.getConnection();
+			String query = ("select * from bookimg where name = '"+bookname+"'");
+			Statement statement = connection.createStatement();
+			ResultSet resultSet =statement.executeQuery(query);
+			
+			if(resultSet.next()) {
+				byte[] img = resultSet.getBytes("image");
+				ImageIcon imgIcon = new ImageIcon(img);
+				Image img1 = imgIcon.getImage();
+				Image myimgImage = img1.getScaledInstance(bookimg.getWidth(), bookimg.getHeight(), Image.SCALE_SMOOTH);
+				ImageIcon newimgIcon = new ImageIcon(myimgImage);
+				bookimg.setIcon(newimgIcon);
+						}
+			else {
+				JOptionPane.showMessageDialog(authornamefield, "book details mismatched");
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
+	
 	//fetch student details
 	
 	public void getstudentdetails() {
@@ -154,6 +194,8 @@ public class isssue_books extends JFrame {
 	}
 	
 	
+	
+	
 	//get all details required to issue book
 	public boolean issued() throws ParseException {
 		boolean isissued = false;
@@ -162,18 +204,22 @@ public class isssue_books extends JFrame {
 		String bookString = booknamefield.getText();
 		String studentString =studentnamefield.getText();
 		
-		String issueDate = today.getText();
+		 String issueDate = today.getText();
 		 Date date1=new SimpleDateFormat("dd MMM yyyy").parse(issueDate); 
 		 
 		 long l1 = date1.getTime();
 		 
 		 
-		String duedateString = dueday.getText();
-		 Date date2=new SimpleDateFormat("dd MMM yyyy").parse(duedateString);  
-		long l2 = date2.getTime();
+
+		 
+		SimpleDateFormat date2=new SimpleDateFormat("dd MMM yyyy"); 
+		String duedateString = date2.format(dateChooser.getDate());
+		
+		Date date21=new SimpleDateFormat("dd MMM yyyy").parse(duedateString); 
+		long l2 = date21.getTime();
 		
 		java.sql.Date issueddate =new java.sql.Date(l1);
-		java .sql.Date duueddate = new java.sql.Date(l2);
+		java .sql.Date duedate = new java.sql.Date(l2);
 		
 		try {
 			
@@ -187,7 +233,7 @@ public class isssue_books extends JFrame {
 			pStatement.setInt(3, studentid);
 			pStatement.setString(4, studentString);
 			pStatement.setDate(5, issueddate);
-			pStatement.setDate(6, duueddate);
+			pStatement.setDate(6, duedate);
 			pStatement.setString(7, "pending");
 			
 			
@@ -271,6 +317,12 @@ try {
 		return IsAlreadyIssued;
 	}
 	
+	
+	// fetch the book image and the author name from the table.
+	public void FetchBookImg() {
+		
+	}
+	
 	/**
 	 * Create the frame.
 	 */
@@ -289,6 +341,10 @@ try {
 		BookPanel.setBounds(0, 0, 390, 602);
 		contentPane.add(BookPanel);
 		BookPanel.setLayout(null);
+		
+		bookimg = new JLabel("");
+		bookimg.setBounds(272, 162, 108, 119);
+		BookPanel.add(bookimg);
 		
 		BackPanel = new JPanel();
 		BackPanel.setBackground(new Color(51, 51, 153));
@@ -354,7 +410,7 @@ try {
 		bookidfield.setForeground(new Color(255, 255, 255));
 		bookidfield.setBackground(new Color(255, 0, 0));
 		bookidfield.setBorder(new MatteBorder(0, 0, 0, 0, (Color) new Color(0, 0, 0)));
-		bookidfield.setBounds(125, 208, 234, 40);
+		bookidfield.setBounds(125, 208, 111, 40);
 		BookPanel.add(bookidfield);
 		bookidfield.setColumns(10);
 		
@@ -584,17 +640,6 @@ try {
 	      today.setValue(new Date());
 	      today.setBounds(950, 352, 253, 49);
 	      contentPane.add(today);
-	      
-	      
-	      
-	      
-	      DateFormat datedueFormat = new SimpleDateFormat("dd MMM YYYY");
-	      dueday = new JFormattedTextField(datedueFormat);
-	      dueday.setFont(new Font("Ubuntu", Font.PLAIN, 20));
-	      dueday.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(255, 0, 51)));
-	      dueday.setColumns(10);
-		  dueday.setBounds(950, 429, 253, 49);
-		  contentPane.add(dueday);
 		
 		btnissueBook = new JButton("Issue Book");
 		btnissueBook.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -633,6 +678,13 @@ try {
 		btnissueBook.setFont(new Font("Ubuntu", Font.BOLD, 25));
 		btnissueBook.setBounds(883, 515, 274, 55);
 		contentPane.add(btnissueBook);
+		
+		dateChooser = new JDateChooser();
+		dateChooser.setFont(new Font("Ubuntu", Font.PLAIN, 20));
+		dateChooser.setDateFormatString("dd MMM yyyy");
+		dateChooser.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(255, 0, 102)));
+		dateChooser.setBounds(950, 429, 240, 49);
+		contentPane.add(dateChooser);
 		
 
 		

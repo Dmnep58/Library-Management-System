@@ -25,6 +25,8 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.data.general.DefaultPieDataset;
+
+import function.DBconnection;
 import rojeru_san.complementos.RSTableMetro;
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
@@ -92,6 +94,8 @@ public class HomePage extends JFrame {
 	DefaultTableModel model;
 	
 	
+	LoginPage loginPage = new LoginPage();
+	static String nameString  =LoginPage.userTeacherFiled.getText();
 	
 	
 	
@@ -343,7 +347,7 @@ public class HomePage extends JFrame {
 		
 		
 		
-		userlabel = new JLabel("Welcome User");
+		userlabel = new JLabel("Welcome "+nameString);
 		userlabel.setIcon(new ImageIcon("C:\\Users\\pm429\\eclipse-workspace\\LIBRARY_MANAGEMENT SYSTEM\\src\\adminIcons\\male_user_50px.png"));
 		userlabel.setForeground(new Color(255, 255, 255));
 		userlabel.setFont(new Font("Ubuntu", Font.BOLD, 18));
@@ -570,7 +574,7 @@ public class HomePage extends JFrame {
 		logout = new JPanel();
 		logout.setLayout(null);
 		logout.setBackground(new Color(51, 102, 255));
-		logout.setBounds(0, 548, 288, 41);
+		logout.setBounds(0, 585, 288, 41);
 		panel.add(logout);
 		
 		logoutlabel = new JLabel("   Logout\r\n");
@@ -590,6 +594,29 @@ public class HomePage extends JFrame {
 		logoutlabel.setFont(new Font("Ubuntu", Font.BOLD, 21));
 		logoutlabel.setBounds(22, 0, 256, 41);
 		logout.add(logoutlabel);
+		
+		JPanel Defaulter_list_1 = new JPanel();
+		Defaulter_list_1.setLayout(null);
+		Defaulter_list_1.setBackground(new Color(51, 51, 51));
+		Defaulter_list_1.setBounds(0, 533, 288, 41);
+		panel.add(Defaulter_list_1);
+		
+		JLabel ReserveAndPassword = new JLabel("  Reserve and Password ");
+		ReserveAndPassword.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		ReserveAndPassword.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				ReervationPanel rr = new ReervationPanel();
+				rr.setVisible(true);
+				dispose();
+				
+			}
+		});
+		ReserveAndPassword.setIcon(new ImageIcon("C:\\Users\\pm429\\eclipse-workspace\\ScreenLoading\\Images\\white-search-person.png"));
+		ReserveAndPassword.setForeground(Color.WHITE);
+		ReserveAndPassword.setFont(new Font("Ubuntu", Font.BOLD, 19));
+		ReserveAndPassword.setBounds(24, 0, 263, 41);
+		Defaulter_list_1.add(ReserveAndPassword);
 		
 		panel_3 = new JPanel();
 		panel_3.setBounds(287, 59, 933, 637);

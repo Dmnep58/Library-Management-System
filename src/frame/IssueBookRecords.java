@@ -15,12 +15,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.awt.Cursor;
+
+import javax.management.modelmbean.ModelMBean;
 import javax.swing.ImageIcon;
 import javax.swing.JScrollPane;
 import java.awt.ComponentOrientation;
 import rojeru_san.complementos.RSTableMetro;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+
+import function.DBconnection;
 
 public class IssueBookRecords extends JFrame {
 
@@ -48,6 +52,9 @@ public class IssueBookRecords extends JFrame {
 	private JScrollPane scrollPaneTabel;
 	private DefaultTableModel model;
 	private RSTableMetro table;
+	
+	
+	
  
 	/**
 	 * Launch the application.
@@ -65,11 +72,11 @@ public class IssueBookRecords extends JFrame {
 		});
 	}
 
-	
+
 	public void setRecordTable() {
 		try {
 			Connection connection =DBconnection.getConnection();
-			String query= ("select * from issue_book where status = '"+"pending"+"'");
+			String query= ("select * from issue_book where status = '"+"pending"+"' order by due_date Asc");
 			PreparedStatement preparedStatement = connection.prepareStatement(query);
 			
 			ResultSet resultSet = preparedStatement.executeQuery();

@@ -1,4 +1,4 @@
-package frame;
+	package frame;
 
 
 import java.awt.EventQueue;
@@ -11,6 +11,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+
+import function.App;
+import function.DBconnection;
+import function.PasswordEncodingDecoding;
+import function.StudentPanelFunctions;
 
 import java.awt.Color;
 
@@ -90,6 +95,9 @@ public class manage_Student extends JFrame {
 	private String course;
 	private String branch;
 	private int studentid;
+	String string;
+	
+	PasswordEncodingDecoding pwDecoding = new PasswordEncodingDecoding();
 	
 	
 	/**
@@ -147,18 +155,19 @@ public class manage_Student extends JFrame {
 		Name = STUDENTNAMEFIELD.getText();
 		course= courseselect.getSelectedItem().toString();
 		branch = branchselect.getSelectedItem().toString();
-		
+		string = StudentPanelFunctions.generatePassword(5);
 		
 		try {
 			
 			Connection connection = DBconnection.getConnection();
-			String query = ("insert into manage_students values(?,?,?,?)");
+			String query = ("insert into manage_students values(?,?,?,?,?)");
 			PreparedStatement preparedStatement = connection.prepareStatement(query);
 			
 			preparedStatement.setInt(1, studentid);
 			preparedStatement.setString(2, Name);
 			preparedStatement.setString(3, course);
 			preparedStatement.setString(4, branch);
+			preparedStatement.setString(5, pwDecoding.encrypt(string));
 			
 			int rowcount = preparedStatement.executeUpdate();
 			 if(rowcount >0) {
@@ -174,11 +183,20 @@ public class manage_Student extends JFrame {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
+		String emailString = studentFIELD.getText()+"@kiit.ac.in";
+	    String PasswordEmail=
+		 		 "Hi "
+				+studentFIELD.getText()+","
+		 		+ "\r\n"
+		 		+ "Your Password is : "
+		 		+ string;
 		
+		
+		App.sendEmail(PasswordEmail,App.getSubject(),emailString, App.getFrom());
+		JOptionPane.showMessageDialog(TitleLabel,"student password is "+ string);
 		
 		return isadd;
-		
-		
+			
 	}
 	
 	
@@ -198,10 +216,11 @@ public class manage_Student extends JFrame {
 			PreparedStatement preparedStatement = connection.prepareStatement(query);
 			
 			
-			preparedStatement.setInt(1, studentid);
-			preparedStatement.setString(2, Name);
-			preparedStatement.setString(3, course);
-			preparedStatement.setString(4, branch);
+			
+			preparedStatement.setString(1, Name);
+			preparedStatement.setString(2, course);
+			preparedStatement.setString(3, branch);
+			preparedStatement.setInt(4, studentid);
 			
 			int rowcount = preparedStatement.executeUpdate();
 			 if(rowcount >0) {
@@ -225,7 +244,6 @@ public class manage_Student extends JFrame {
 	
 	
 	// to delete data
-	
 	public boolean delete_details() {
 		boolean delete =false;
 		studentid = Integer.parseInt(studentFIELD.getText());
@@ -264,7 +282,6 @@ public class manage_Student extends JFrame {
 	
 	
 	// clear table
-	
 	public void cleartable() {
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		model.setRowCount(0);
@@ -339,7 +356,7 @@ public class manage_Student extends JFrame {
 		
 		courseselect = new JComboBox();
 		courseselect.setFont(new Font("Ubuntu", Font.BOLD, 19));
-		courseselect.setModel(new DefaultComboBoxModel(new String[] {"php", "java", "c++", "c ", "DBMS", "OS", "C#"}));
+		courseselect.setModel(new DefaultComboBoxModel(new String[] {"OS", "DBMS ", "Biology", "Chemistry", "ComputerNetworks", "DAA", "SocialStudies"}));
 		courseselect.setBounds(104, 373, 237, 31);
 		StudentDataPanel.add(courseselect);
 		
@@ -356,7 +373,7 @@ public class manage_Student extends JFrame {
 		StudentDataPanel.add(BRANCHNAME);
 		
 		 branchselect = new JComboBox();
-		branchselect.setModel(new DefaultComboBoxModel(new String[] {"cse", "it ", "bsc", "management", "medical", "technical"}));
+		branchselect.setModel(new DefaultComboBoxModel(new String[] {"CSE", "IT", "+2", "10", "Medical", "BCA"}));
 		branchselect.setSelectedIndex(4);
 		branchselect.setFont(new Font("Ubuntu", Font.BOLD, 19));
 		branchselect.setBounds(104, 489, 237, 31);
@@ -383,9 +400,12 @@ public class manage_Student extends JFrame {
 		ADD.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(addStudents()==true) {
+					
 					JOptionPane.showMessageDialog(ADD, "student Added");
 					cleartable();
 					setStudentDetails();
+					
+						
 				}
 				else {
 					JOptionPane.showMessageDialog(ADD, "student Addition failed");
@@ -428,13 +448,13 @@ public class manage_Student extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				
 				if(update_table()==true) {
-					JOptionPane.showMessageDialog(UPDATE, "Book updated");
+					JOptionPane.showMessageDialog(UPDATE, "Student details  updated");
 					cleartable();
 					setStudentDetails();
 					
 				}
 				else {
-					JOptionPane.showMessageDialog(UPDATE, "Book UPDATION failed");
+					JOptionPane.showMessageDialog(UPDATE, "Student details UPDATION failed");
 
 				}
 				
@@ -458,13 +478,13 @@ public class manage_Student extends JFrame {
 			
 				
 				if(delete_details()==true) {
-					JOptionPane.showMessageDialog(DELETE, "Book DELETE");
+					JOptionPane.showMessageDialog(DELETE, "Student details DELETED");
 					cleartable();
 					setStudentDetails();
 					
 				}
 				else {
-					JOptionPane.showMessageDialog(DELETE, "Book DELETION failed");
+					JOptionPane.showMessageDialog(DELETE, "Student details DELETION failed");
 
 				}
 				
@@ -539,6 +559,7 @@ public class manage_Student extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int rowno = table.getSelectedRow();
+				System.out.println(rowno);
 				TableModel model = (DefaultTableModel)table.getModel();
 				
 				
