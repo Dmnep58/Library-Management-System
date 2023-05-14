@@ -13,7 +13,6 @@ public class DBconnection {
 	public  final String USER = "root";
 	public  final String PASSWORD = "1424";
 	public  final String SQL_DRIVER = "com.mysql.cj.jdbc.Driver";
-	static Connection conn;
 	
 	//private constructor
 	private DBconnection() {
